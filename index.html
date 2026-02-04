@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual AI English Tutor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+        .chat-scroll::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.1); border-radius: 20px; }
+        .message-content strong { color: #1f2937; font-weight: 700; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .typing-dot { animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen w-full overflow-hidden">
+    <div class="flex flex-col md:flex-row h-full w-full">
+        <!-- LUCA -->
+        <div class="w-full md:w-1/2 flex flex-col h-full bg-blue-50 border-b-4 md:border-b-0 md:border-r-4 border-blue-200">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 shadow-lg">
+                <h2 class="text-2xl font-bold">Luca</h2>
+                <p class="text-blue-100 text-sm">Elementary / Pre-Intermediate (A1-A2)</p>
+            </div>
+            <div id="chat-luca" class="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll">
+                <div class="flex justify-start">
+                    <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] border border-blue-100">
+                        <p class="text-sm font-semibold text-blue-600 mb-1">Luca</p>
+                        <p class="text-gray-700">Hello! I'm Luca. 😊 I'm here to help you with basic English. Don't worry about making mistakes—that's how we learn! What would you like to talk about today?</p>
+                    </div>
+                </div>
+            </div>
+            <div id="typing-luca" class="hidden px-4 py-2">
+                <div class="bg-white p-3 rounded-full rounded-tl-none shadow-sm inline-flex space-x-1 w-16 justify-center border border-blue-100">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-blue-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-blue-400 rounded-full typing-dot"></div>
+                </div>
+            </div>
+            <div class="p-4 bg-white border-t border-blue-100">
+                <div class="flex space-x-2">
+                    <button onclick="clearChat('luca')" class="px-3 py-2 text-blue-500 hover:bg-blue-50 rounded-lg text-sm font-medium">Clear</button>
+                    <input type="text" id="input-luca" class="flex-1 border-2 border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 bg-blue-50/30" placeholder="Type your message..." onkeypress="handleEnter(event, 'luca')">
+                    <button onclick="sendMessage('luca')" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-xl font-semibold shadow-md">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATA -->
+        <div class="w-full md:w-1/2 flex flex-col h-full bg-purple-50">
+            <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 shadow-lg">
+                <h2 class="text-2xl font-bold">Cata</h2>
+                <p class="text-purple-100 text-sm">Intermediate / Upper-Intermediate (B1-B2)</p>
+            </div>
+            <div id="chat-cata" class="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll">
+                <div class="flex justify-start">
+                    <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] border border-purple-100">
+                        <p class="text-sm font-semibold text-purple-600 mb-1">Cata</p>
+                        <p class="text-gray-700">Greetings! I'm Cata. 🎓 Ready to refine your language skills? I focus on idiomatic expressions, coherence, and advanced vocabulary. Let's engage in a sophisticated conversation.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="typing-cata" class="hidden px-4 py-2">
+                <div class="bg-white p-3 rounded-full rounded-tl-none shadow-sm inline-flex space-x-1 w-16 justify-center border border-purple-100">
+                    <div class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></div>
+                </div>
+            </div>
+            <div class="p-4 bg-white border-t border-purple-100">
+                <div class="flex space-x-2">
+                    <button onclick="clearChat('cata')" class="px-3 py-2 text-purple-600 hover:bg-purple-50 rounded-lg text-sm font-medium">Clear</button>
+                    <input type="text" id="input-cata" class="flex-1 border-2 border-purple-200 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 bg-purple-50/30" placeholder="Type your message..." onkeypress="handleEnter(event, 'cata')">
+                    <button onclick="sendMessage('cata')" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl font-semibold shadow-md">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tu API key está aquí (solo tú la ves, los alumnos no necesitan saber qué es)
+        const API_KEY = 'AIzaSyB3VF6Q88UniUNpbAwJUGGa8YOtck-3II0';
+        
+        const TUTORS = {
+            luca: {
+                color: 'blue',
+                instruction: `You are Luca, a patient A1/A2 tutor. Use simple English. Respond naturally, then provide "**Luca's Feedback**" section. Correct 1-2 basic grammar/vocab mistakes and offer a "Simple Natural Way" to say it.`
+            },
+            cata: {
+                color: 'purple',
+                instruction: `You are Cata, a sophisticated B1/B2 tutor. Use idiomatic English. Respond naturally, then provide "**Cata's Upper-Intermediate Analysis**" section. Focus on Cohesion, Coherence, grammar and Lexical range. Provide a "Polished Native Version".`
+            }
+        };
+
+        const histories = { luca: [], cata: [] };
+
+        function handleEnter(e, id) { if (e.key === 'Enter') sendMessage(id); }
+        
+        function clearChat(id) {
+            const chat = document.getElementById(`chat-${id}`);
+            histories[id] = [];
+            const welcome = id === 'luca' 
+                ? "Hello! I'm Luca. 😊 I'm here to help you with basic English. Don't worry about making mistakes—that's how we learn! What would you like to talk about today?"
+                : "Greetings! I'm Cata. 🎓 Ready to refine your language skills? Let's engage in a sophisticated conversation.";
+            chat.innerHTML = `<div class="flex justify-start fade-in"><div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] border border-${TUTORS[id].color}-100"><p class="text-sm font-semibold text-${TUTORS[id].color}-600 mb-1">${id === 'luca' ? 'Luca' : 'Cata'}</p><p class="text-gray-700">${welcome}</p></div></div>`;
+        }
+
+        async function sendMessage(id) {
+            const input = document.getElementById(`input-${id}`);
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chat = document.getElementById(`chat-${id}`);
+            const div = document.createElement('div');
+            div.className = 'flex justify-end fade-in';
+            div.innerHTML = `<div class="bg-${TUTORS[id].color}-600 text-white p-4 rounded-2xl rounded-tr-none shadow-md max-w-[90%]"><div class="text-sm">${msg}</div></div>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+            
+            histories[id].push({ role: 'user', text: msg });
+            input.value = '';
+            document.getElementById(`typing-${id}`).classList.remove('hidden');
+
+            try {
+                const history = histories[id].slice(-10).map(h => `${h.role === 'user' ? 'Student' : 'Tutor'}: ${h.text}`).join('\n');
+                
+                const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + API_KEY, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            role: 'user',
+                            parts: [{ text: TUTORS[id].instruction + '\n\n' + history + '\nStudent: ' + msg + '\nTutor:' }]
+                        }],
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById(`typing-${id}`).classList.add('hidden');
+                
+                if (data.error) {
+                    addTutorMsg(id, 'Sorry, I had a problem. Please try again!', true);
+                } else {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    addTutorMsg(id, reply);
+                    histories[id].push({ role: 'tutor', text: reply });
+                }
+            } catch (err) {
+                document.getElementById(`typing-${id}`).classList.add('hidden');
+                addTutorMsg(id, 'Connection error. Please try again!', true);
+                console.error(err);
+            }
+        }
+
+        function addTutorMsg(id, text, isError) {
+            const chat = document.getElementById(`chat-${id}`);
+            const div = document.createElement('div');
+            div.className = 'flex justify-start fade-in';
+            const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            div.innerHTML = `<div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-md max-w-[90%] border border-gray-100"><p class="text-xs font-bold text-${TUTORS[id].color}-600 mb-1 uppercase">${id === 'luca' ? 'Luca' : 'Cata'}</p><div class="text-sm leading-relaxed ${isError ? 'text-red-500' : 'text-gray-800'}">${formatted}</div></div>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>
